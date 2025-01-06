@@ -28,12 +28,31 @@ app.get("/messages", async (req, res) => {
 
 app.post("/addMessage", async (req, res) => {
   const user = req.body.user;
+  const title = req.body.title;
   const text = req.body.text;
 
   const message = await Message.create({
     user: user,
+    title: title,
     text: text,
   });
+  if (message) {
+    res.json({ message: message });
+  } else {
+    res.status(404).end();
+  }
+});
+
+app.put("/addMessage/:id", async (req, res) => {
+  const messageId = req.params.id;
+  const title = req.body.title;
+  const text = req.body.text;
+  await Message.findByIdAndUpdate(messageId, {
+    title: title,
+    text: text,
+  });
+  
+  const message = await Message.findById(messageId);
   if (message) {
     res.json({ message: message });
   } else {
